@@ -1,12 +1,11 @@
-import pickle
-import numpy as np
 import xgboost as xgb
+import numpy as np
 
 try:
-    with open("model.pkl", "rb") as f:
-        model = pickle.load(f)
+    model = xgb.XGBClassifier()
+    model.load_model("model.json")
 except Exception as e:
-    print(f"Erreur lors du chargement du modèle : {e}")
+    print(f"[ERREUR] Chargement du modèle : {e}")
     model = None
 
 def predict_match(team_1_rating: float, team_2_rating: float) -> str:
@@ -15,14 +14,15 @@ def predict_match(team_1_rating: float, team_2_rating: float) -> str:
 
     try:
         features = np.array([[team_1_rating, team_2_rating]])
-        prediction = model.predict(features)[0]
+        prediction = model.predict(features)
+        result = prediction[0]
 
-        if prediction == 1:
+        if result == 1:
             return "Team 1 wins"
-        elif prediction == 2:
+        elif result == 2:
             return "Team 2 wins"
         else:
             return "Draw"
     except Exception as e:
-        print(f"Erreur pendant la prédiction : {e}")
+        print(f"[ERREUR] Prédiction : {e}")
         return "Prediction failed"
