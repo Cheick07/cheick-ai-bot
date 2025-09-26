@@ -4,12 +4,12 @@ import os
 
 model = None
 
-# === Chargement du modèle ===
+# === Chargement du modèle XGBoost (.json) ===
 try:
     if os.path.exists("model.json"):
         model = xgb.XGBClassifier()
         model.load_model("model.json")
-        print("✅ Modèle chargé avec succès")
+        print("✅ Modèle .json chargé avec succès")
     else:
         print("❌ model.json introuvable")
 except Exception as e:
@@ -19,16 +19,12 @@ except Exception as e:
 # === Fonction de prédiction ===
 def predict_match(team_1_rating, team_2_rating, team_1_rank, team_2_rank, team_1_odds, team_2_odds):
     if model is None:
-        print("❌ Modèle non chargé")
         return {"result": "Model not loaded"}
 
     try:
         input_data = np.array([[team_1_rating, team_2_rating, team_1_rank, team_2_rank, team_1_odds, team_2_odds]])
-        print(f"🔍 Input reçu : {input_data}")
-
         prediction = model.predict(input_data)[0]
         probabilities = model.predict_proba(input_data)[0]
-        print(f"✅ Prédiction : {prediction}, Probabilités : {probabilities}")
 
         return {
             "result": "Team 1 wins" if prediction == 1 else "Team 2 wins" if prediction == 2 else "Draw",
