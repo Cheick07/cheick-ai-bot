@@ -5,15 +5,17 @@
   <title>Cheick AI Bot</title>
   <style>
     body {
-      font-family: Arial;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+      color: #fff;
       padding: 40px;
-      background: #f4f4f4;
       max-width: 600px;
       margin: auto;
     }
     h1 {
-      color: #333;
       text-align: center;
+      font-size: 2.5em;
+      margin-bottom: 30px;
     }
     label {
       font-weight: bold;
@@ -25,33 +27,48 @@
       margin-top: 5px;
       width: 100%;
       box-sizing: border-box;
+      border-radius: 5px;
+      border: none;
     }
     button {
-      background-color: #007bff;
+      background-color: #00c6ff;
       color: white;
-      border: none;
+      font-size: 1em;
       cursor: pointer;
     }
     button:hover {
-      background-color: #0056b3;
+      background-color: #007acc;
     }
     #resultat {
       margin-top: 30px;
+      background: #ffffff22;
+      padding: 20px;
+      border-radius: 10px;
       font-size: 1.2em;
-      font-weight: bold;
-      color: #222;
       text-align: center;
     }
   </style>
 </head>
 <body>
-  <h1>Bienvenue sur l'API de Cheick 🎯</h1>
+  <h1>Prédiction de match ⚽</h1>
 
-  <label for="team1">Team 1 Rating:</label>
+  <label>Team 1 Rating:</label>
   <input type="number" id="team1" placeholder="Ex: 85.0">
 
-  <label for="team2">Team 2 Rating:</label>
+  <label>Team 2 Rating:</label>
   <input type="number" id="team2" placeholder="Ex: 78.5">
+
+  <label>Team 1 Rank:</label>
+  <input type="number" id="rank1" placeholder="Ex: 5">
+
+  <label>Team 2 Rank:</label>
+  <input type="number" id="rank2" placeholder="Ex: 12">
+
+  <label>Team 1 Odds:</label>
+  <input type="number" id="odds1" placeholder="Ex: 2.1" step="0.01">
+
+  <label>Team 2 Odds:</label>
+  <input type="number" id="odds2" placeholder="Ex: 3.4" step="0.01">
 
   <button onclick="envoyerPrediction()">Prédire le match</button>
 
@@ -61,25 +78,39 @@
     function envoyerPrediction() {
       const team1 = parseFloat(document.getElementById("team1").value);
       const team2 = parseFloat(document.getElementById("team2").value);
+      const rank1 = parseInt(document.getElementById("rank1").value);
+      const rank2 = parseInt(document.getElementById("rank2").value);
+      const odds1 = parseFloat(document.getElementById("odds1").value);
+      const odds2 = parseFloat(document.getElementById("odds2").value);
 
-      if (isNaN(team1) || isNaN(team2)) {
-        document.getElementById("resultat").innerText = "Veuillez entrer deux notes valides.";
+      if ([team1, team2, rank1, rank2, odds1, odds2].some(isNaN)) {
+        document.getElementById("resultat").innerText = "Veuillez remplir tous les champs correctement.";
         return;
       }
 
       fetch("https://cheick-ai-bot-5.onrender.com/predict", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           team_1_rating: team1,
-          team_2_rating: team2
+          team_2_rating: team2,
+          team_1_rank: rank1,
+          team_2_rank: rank2,
+          team_1_odds: odds1,
+          team_2_odds: odds2
         })
       })
       .then(response => response.json())
       .then(data => {
-        document.getElementById("resultat").innerText = "Résultat : " + data.result;
+        document.getElementById("resultat").innerHTML = `
+          <p><strong>Résultat :</strong> ${data.result}</p>
+          <p>🔢 <strong>Probabilités :</strong></p>
+          <ul style="list-style:none; padding:0;">
+            <li>Team 1 : ${data.probabilities["Team 1"]}%</li>
+            <li>Team 2 : ${data.probabilities["Team 2"]}%</li>
+            <li>Draw : ${data.probabilities["Draw"]}%</li>
+          </ul>
+        `;
       })
       .catch(error => {
         console.error("Erreur API :", error);
