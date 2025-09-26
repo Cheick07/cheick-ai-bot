@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from api.routes import router
+from api import router
 
-app = FastAPI(title="Cheick AI Bot")
+app = FastAPI()
 app.include_router(router)
