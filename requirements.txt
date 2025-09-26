@@ -1,14 +1,11 @@
-<<<<<<< HEAD
 fastapi
 uvicorn
 xgboost
 scikit-learn
 pandas
-=======
 fastapi
 uvicorn
 xgboost
 scikit-learn
 pandas
->>>>>>> 9dc4bd644be0ed03501e8b7274f948aedbb1854b
 numpy
