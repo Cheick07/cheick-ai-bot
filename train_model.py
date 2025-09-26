@@ -1,4 +1,4 @@
-# === Entraîne un modèle XGBoost avec 2 ratings ===
+# ✅ Version finale confirmée : entraînement avec 2 ratings uniquement
 import xgboost as xgb
 import numpy as np
 
@@ -20,4 +20,4 @@ model.fit(X, y)
 
 # Sauvegarde du modèle au format .json
 model.save_model("model.json")
-print("✅ Modèle avec 2 ratings sauvegardé dans model.json")
+print("✅ Modèle avec 2 ratings sauvegardé dans model.json") # version finale

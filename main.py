@@ -22,6 +22,6 @@ class MatchInput(BaseModel):
     team_2_rating: float
 
 # Route POST /predict
-@app.post("/predict")
+@app.post("/predict") # version 2 ratings
 def predict(input: MatchInput):
     return predict_match(input.team_1_rating, input.team_2_rating)

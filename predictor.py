@@ -1,4 +1,4 @@
-# === Charge le modèle et prédit le gagnant avec les probabilités ===
+# ✅ Version finale confirmée : prédiction avec 2 ratings + pourcentages
 import xgboost as xgb
 import numpy as np
 import os
@@ -9,7 +9,7 @@ model = None
 try:
     model = xgb.XGBClassifier()
     model.load_model("model.json")
-    print("✅ Modèle chargé avec succès")
+    print("✅ Modèle chargé avec succès") # version 2 ratings
 except Exception as e:
     print(f"[ERREUR] Chargement du modèle : {e}")
     model = None
