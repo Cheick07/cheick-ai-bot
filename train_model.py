@@ -1,58 +1,25 @@
-import pandas as pd
 import xgboost as xgb
-import pickle
+import numpy as np
 
-# Données fictives
-data = {
-    'home_rank': [5, 10, 3],
-    'away_rank': [20, 15, 8],
-    'odds_home': [1.8, 2.1, 1.5],
-    'odds_draw': [3.2, 3.0, 3.5],
-    'odds_away': [4.5, 3.8, 5.0],
-    'result': [1, 0, -1]  # 1 = home win, 0 = draw, -1 = away win
-}
+# === Étape 1 : Données d'entraînement ===
+# Chaque ligne représente : [team_1_rating, team_2_rating]
+X = np.array([
+    [85.0, 78.5],
+    [70.0, 80.0],
+    [90.0, 60.0],
+    [65.0, 65.0],
+    [88.0, 75.0],
+    [72.0, 85.0],
+    [80.0, 80.0]
+])
 
-df = pd.DataFrame(data)
+# Labels : 1 = Team 1 wins, 2 = Team 2 wins, 0 = Draw
+y = np.array([1, 2, 1, 0, 1, 2, 0])
 
-# Remapper les classes : -1 → 0, 0 → 1, 1 → 2
-df['result'] = df['result'].map({-1: 0, 0: 1, 1: 2})
-
-X = df[['home_rank', 'away_rank', 'odds_home', 'odds_draw', 'odds_away']]
-y = df['result']
-
-model = xgb.XGBClassifier()
+# === Étape 2 : Entraînement du modèle ===
+model = xgb.XGBClassifier(use_label_encoder=False, eval_metric="mlogloss")
 model.fit(X, y)
 
-with open("model.pkl", "wb") as f:
-    pickle.dump(model, f)
-
-print("✅ Modèle entraîné et sauvegardé dans model.pkl")
-import pandas as pd
-import xgboost as xgb
-import pickle
-
-# Données fictives
-data = {
-    'home_rank': [5, 10, 3],
-    'away_rank': [20, 15, 8],
-    'odds_home': [1.8, 2.1, 1.5],
-    'odds_draw': [3.2, 3.0, 3.5],
-    'odds_away': [4.5, 3.8, 5.0],
-    'result': [1, 0, -1]  # 1 = home win, 0 = draw, -1 = away win
-}
-
-df = pd.DataFrame(data)
-
-# Remapper les classes : -1 → 0, 0 → 1, 1 → 2
-df['result'] = df['result'].map({-1: 0, 0: 1, 1: 2})
-
-X = df[['home_rank', 'away_rank', 'odds_home', 'odds_draw', 'odds_away']]
-y = df['result']
-
-model = xgb.XGBClassifier()
-model.fit(X, y)
-
-with open("model.pkl", "wb") as f:
-    pickle.dump(model, f)
-
-print("✅ Modèle entraîné et sauvegardé dans model.pkl")
+# === Étape 3 : Sauvegarde du modèle ===
+model.save_model("model.json")
+print("✅ Modèle entraîné et sauvegardé dans model.json")

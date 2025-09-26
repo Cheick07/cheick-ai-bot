@@ -1,30 +1,30 @@
 import xgboost as xgb
 import numpy as np
+import os
 
-# Chargement du modèle
+model = None
+
 try:
-    model = xgb.XGBClassifier()
-    model.load_model("model.json")
+    if os.path.exists("model.json"):
+        model = xgb.XGBClassifier()
+        model.load_model("model.json")
+        print("✅ Modèle chargé avec succès")
+    else:
+        print("❌ model.json introuvable")
 except Exception as e:
     print(f"[ERREUR] Chargement du modèle : {e}")
     model = None
 
-# Fonction de prédiction
-def predict_match(team_1_rating: float, team_2_rating: float) -> str:
+def predict_match(team_1_rating: float, team_2_rating: float):
     if model is None:
-        return "Model not loaded"
+        return {"prediction": "Model not loaded"}
 
-    try:
-        features = np.array([[team_1_rating, team_2_rating]])
-        prediction = model.predict(features)
-        result = prediction[0]
+    input_data = np.array([[team_1_rating, team_2_rating]])
+    prediction = model.predict(input_data)[0]
 
-        if result == 1:
-            return "Team 1 wins"
-        elif result == 2:
-            return "Team 2 wins"
-        else:
-            return "Draw"
-    except Exception as e:
-        print(f"[ERREUR] Prédiction : {e}")
-        return "Prediction failed"
+    if prediction == 1:
+        return {"result": "Team 1 wins"}
+    elif prediction == 2:
+        return {"result": "Team 2 wins"}
+    else:
+        return {"result": "Draw"}

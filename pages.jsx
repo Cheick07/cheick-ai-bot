@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import React, { useState } from 'react';
 import axios from 'axios';
 
@@ -33,7 +32,6 @@ export default function Home() {
     </div>
   );
 }
-=======
 import React, { useState } from 'react';
 import axios from 'axios';
 
@@ -68,4 +66,3 @@ export default function Home() {
     </div>
   );
 }
->>>>>>> 9dc4bd644be0ed03501e8b7274f948aedbb1854b
